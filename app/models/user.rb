@@ -24,9 +24,9 @@ class User < ActiveRecord::Base
 #   has_many(:answered_polls, :through => :answered_questions, :source => :poll)
 
   def completed_polls
-    polls = Poll.find_by_sql([<<-SQL, self.id])
+    Poll.find_by_sql([<<-SQL, self.id])
       SELECT
-        polls.*, COUNT(*) AS tot_qs, COUNT(answer_choices.id) AS ans_qs
+        polls.*
       FROM
         responses
       JOIN
@@ -42,7 +42,6 @@ class User < ActiveRecord::Base
       HAVING
         COUNT(*) = COUNT(answer_choices.id)
     SQL
-    p polls
   end
 
 end
