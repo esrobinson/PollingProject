@@ -10,6 +10,7 @@
 ActiveRecord::Base.transaction do
 
   User.create!(:user_name => "eric")
+  User.create!(:user_name => "Steve")
 
   Poll.create!(:title => "Poll 1", :author_id => 1)
 
@@ -17,6 +18,6 @@ ActiveRecord::Base.transaction do
 
   AnswerChoice.create!(:text => "Choice 1", :question_id => 1)
 
-  Response.create!(:answer_choice_id => 1, :user_id => 1)
+  Response.create!(:answer_choice_id => 1, :user_id => 2)
 
 end

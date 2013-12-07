@@ -17,4 +17,32 @@ class User < ActiveRecord::Base
   :class_name => "Poll"
   )
 
+#   has_many(:chosen_answers, :though => :responses, :source => :answer_choice)
+#   has_many(:answered_questions,
+#            :through => :chosen_answers,
+#            :source => :question)
+#   has_many(:answered_polls, :through => :answered_questions, :source => :poll)
+
+  def completed_polls
+    polls = Poll.find_by_sql([<<-SQL, self.id])
+      SELECT
+        polls.*, COUNT(*) AS tot_qs, COUNT(answer_choices.id) AS ans_qs
+      FROM
+        responses
+      JOIN
+        answer_choices ON responses.answer_choice_id = answer_choices.id
+      RIGHT JOIN
+        questions ON answer_choices.question_id = questions.id
+      JOIN
+        polls ON questions.poll_id = polls.id
+      WHERE
+        responses.user_id = ?  OR responses.user_id IS NULL
+      GROUP BY
+        polls.id
+      HAVING
+        COUNT(*) = COUNT(answer_choices.id)
+    SQL
+    p polls
+  end
+
 end

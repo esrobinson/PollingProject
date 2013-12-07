@@ -20,7 +20,7 @@ class Response < ActiveRecord::Base
   )
 
   def existing_responses_by_user
-    Response.find_by_sql(<<-SQL, :a => self.user_id, :b => self.answer_choice_id)
+    Response.find_by_sql([<<-SQL, :a => self.user_id, :b => self.answer_choice_id])
       SELECT
         responses.*
       FROM
@@ -54,7 +54,7 @@ class Response < ActiveRecord::Base
                 .where("answer_choices.id = ?", self.answer_choice_id)
                 .select("polls.author_id")
 
-    return unless author_id = self.user_id
+    return unless author_id == self.user_id
     errors[:user] << "cast this poll and may not respond to it"
   end
 end
